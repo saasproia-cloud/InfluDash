@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { useShallow } from "zustand/react/shallow";
 import type { App, ExportPayload, Influencer, Settings } from "./types";
 import { uid } from "./utils";
 import {
@@ -204,7 +205,9 @@ export function useAppById(appId: string | undefined) {
 }
 
 export function useInfluencersByApp(appId: string | undefined) {
-  return useStore((s) => (appId ? s.influencers.filter((i) => i.appId === appId) : []));
+  return useStore(
+    useShallow((s) => (appId ? s.influencers.filter((i) => i.appId === appId) : []))
+  );
 }
 
 export function useInfluencerById(id: string | undefined) {
