@@ -15,6 +15,7 @@ import {
   ShoppingCart,
   Target,
   UserPlus,
+  Clock,
 } from "lucide-react";
 import { useAppById, useInfluencerById, useStore } from "@/lib/store";
 import {
@@ -89,7 +90,12 @@ export default function InfluencerDetailPage({
 
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0">
-          <div className="mb-2 flex items-center gap-2">
+          <div className="mb-2 flex flex-wrap items-center gap-2">
+            {inf.launched === false && (
+              <Badge variant="warning">
+                <Clock className="h-3 w-3" /> Pas encore lancé
+              </Badge>
+            )}
             {inf.paymentType === "rpm" ? (
               <Badge variant="accent">
                 RPM {inf.rpmGiven !== undefined ? `· ${inf.rpmGiven}€` : ""}

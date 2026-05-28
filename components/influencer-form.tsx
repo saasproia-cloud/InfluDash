@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -30,6 +31,7 @@ type Draft = {
   name: string;
   handle: string;
   platform: Platform;
+  launched: boolean;
   paymentType: PaymentType;
   rpmGiven: string;
   costPerVideo: string;
@@ -46,6 +48,7 @@ function toDraft(i?: Partial<Influencer>): Draft {
     name: i?.name ?? "",
     handle: i?.handle ?? "",
     platform: i?.platform ?? "tiktok",
+    launched: i?.launched ?? true,
     paymentType: i?.paymentType ?? "rpm",
     rpmGiven: i?.rpmGiven?.toString() ?? "",
     costPerVideo: i?.costPerVideo?.toString() ?? "",
@@ -69,6 +72,7 @@ function fromDraft(d: Draft): Omit<Influencer, "id" | "createdAt" | "appId"> {
     name: d.name.trim(),
     handle: d.handle.trim() || undefined,
     platform: d.platform,
+    launched: d.launched,
     paymentType: d.paymentType,
     rpmGiven: d.paymentType === "rpm" ? n(d.rpmGiven) : undefined,
     costPerVideo: d.paymentType === "fixed" ? n(d.costPerVideo) : undefined,
@@ -170,6 +174,24 @@ export function InfluencerForm({
               </SelectContent>
             </Select>
           </Field>
+
+          <Card className="p-4">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="text-sm font-medium">Lancé avec l&apos;application</div>
+                <div className="mt-0.5 text-xs text-[var(--muted-foreground)]">
+                  {d.launched
+                    ? "La campagne est en cours."
+                    : "Pas encore lancé — tu pourras remplir les données plus tard."}
+                </div>
+              </div>
+              <Switch
+                checked={d.launched}
+                onCheckedChange={(v) => set("launched", v)}
+                aria-label="Influenceur lancé"
+              />
+            </div>
+          </Card>
 
           <Card className="p-4">
             <div className="mb-3 text-xs font-medium uppercase tracking-wide text-[var(--muted-foreground)]">

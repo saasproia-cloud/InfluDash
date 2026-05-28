@@ -19,6 +19,7 @@ create table if not exists public.influencers (
   handle       text,
   platform     text,
   payment_type text not null default 'rpm' check (payment_type in ('fixed','rpm')),
+  launched     boolean not null default true,
   rpm_given    numeric,
   cost_per_video numeric,
   nb_videos      numeric,

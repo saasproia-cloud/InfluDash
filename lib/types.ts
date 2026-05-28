@@ -9,6 +9,7 @@ export type Influencer = {
   handle?: string;
   platform?: Platform;
   paymentType: PaymentType;
+  launched?: boolean;
   rpmGiven?: number;
   costPerVideo?: number;
   nbVideos?: number;

@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { MoreVertical, Pencil, Trash2, ArrowUpDown } from "lucide-react";
+import { MoreVertical, Pencil, Trash2, ArrowUpDown, Clock } from "lucide-react";
 import type { Influencer } from "@/lib/types";
 import {
   coutInflu,
@@ -106,7 +106,10 @@ export function InfluencerTable({
           return (
             <div
               key={i.id}
-              className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4"
+              className={cn(
+                "rounded-xl border border-[var(--border)] bg-[var(--card)] p-4",
+                i.launched === false && "border-amber-500/30 bg-amber-500/5"
+              )}
             >
               <div className="flex items-start justify-between gap-2">
                 <Link
@@ -146,7 +149,12 @@ export function InfluencerTable({
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-              <div className="mt-3 flex items-center gap-2">
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                {i.launched === false && (
+                  <Badge variant="warning">
+                    <Clock className="h-3 w-3" /> Pas encore lancé
+                  </Badge>
+                )}
                 {i.paymentType === "rpm" ? (
                   <Badge variant="accent">RPM {i.rpmGiven ? `· ${i.rpmGiven}€` : ""}</Badge>
                 ) : (
@@ -227,7 +235,10 @@ export function InfluencerTable({
               return (
                 <tr
                   key={i.id}
-                  className="border-b border-[var(--border)] transition-colors hover:bg-[var(--subtle)]"
+                  className={cn(
+                    "border-b border-[var(--border)] transition-colors hover:bg-[var(--subtle)]",
+                    i.launched === false && "bg-amber-500/5"
+                  )}
                 >
                   <td className="px-4 py-3">
                     <Link
@@ -239,6 +250,11 @@ export function InfluencerTable({
                         <div className="text-xs text-[var(--muted-foreground)]">{i.handle}</div>
                       )}
                     </Link>
+                    {i.launched === false && (
+                      <Badge variant="warning" className="mt-1">
+                        <Clock className="h-3 w-3" /> Pas encore lancé
+                      </Badge>
+                    )}
                   </td>
                   <td className="px-4 py-3 text-[var(--muted-foreground)]">
                     {PLATFORM_LABEL[i.platform ?? "other"]}

@@ -21,6 +21,7 @@ type InfluencerRow = {
   handle: string | null;
   platform: string | null;
   payment_type: string;
+  launched: boolean | null;
   rpm_given: number | null;
   cost_per_video: number | null;
   nb_videos: number | null;
@@ -72,6 +73,7 @@ function rowToInfluencer(r: InfluencerRow): Influencer {
     handle: r.handle ?? undefined,
     platform: (r.platform as Influencer["platform"]) ?? undefined,
     paymentType: (r.payment_type as Influencer["paymentType"]) ?? "rpm",
+    launched: r.launched ?? undefined,
     rpmGiven: r.rpm_given ?? undefined,
     costPerVideo: r.cost_per_video ?? undefined,
     nbVideos: r.nb_videos ?? undefined,
@@ -92,6 +94,7 @@ function influencerToRow(i: Influencer): InfluencerRow {
     handle: i.handle ?? null,
     platform: i.platform ?? null,
     payment_type: i.paymentType,
+    launched: i.launched ?? null,
     rpm_given: num(i.rpmGiven),
     cost_per_video: num(i.costPerVideo),
     nb_videos: num(i.nbVideos),
