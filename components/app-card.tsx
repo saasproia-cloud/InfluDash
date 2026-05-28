@@ -20,8 +20,13 @@ export function AppCard({ app, influencers }: { app: App; influencers: Influence
         />
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[var(--muted)] text-xl">
-              {app.emoji || "📦"}
+            <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-lg bg-[var(--muted)] text-xl">
+              {app.logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={app.logoUrl} alt="" className="h-full w-full object-cover" />
+              ) : (
+                app.emoji || "📦"
+              )}
             </div>
             <div>
               <div className="font-semibold tracking-tight">{app.name}</div>

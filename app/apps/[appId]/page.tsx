@@ -21,6 +21,7 @@ import { MetricsGrid } from "@/components/metrics-grid";
 import { InfluencerTable } from "@/components/influencer-table";
 import { InfluencerForm } from "@/components/influencer-form";
 import { EmptyState } from "@/components/empty-state";
+import { LogoPicker } from "@/components/logo-picker";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -67,14 +68,19 @@ export default function AppPage({ params }: { params: Promise<{ appId: string }>
       <div className="mb-6 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
         <div className="flex items-center gap-3 sm:gap-4">
           <div
-            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-2xl sm:h-14 sm:w-14"
+            className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl text-2xl sm:h-14 sm:w-14"
             style={{
               background: app.accentColor
                 ? `${app.accentColor}20`
                 : "color-mix(in oklab, var(--accent) 14%, transparent)",
             }}
           >
-            {app.emoji || "📦"}
+            {app.logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={app.logoUrl} alt="" className="h-full w-full object-cover" />
+            ) : (
+              app.emoji || "📦"
+            )}
           </div>
           <div className="min-w-0">
             <h1 className="truncate text-2xl font-semibold tracking-tight sm:text-3xl">
@@ -182,6 +188,7 @@ function EditAppDialog({
   const updateApp = useStore((s) => s.updateApp);
   const [name, setName] = useState(app?.name ?? "");
   const [emoji, setEmoji] = useState(app?.emoji ?? "📦");
+  const [logoUrl, setLogoUrl] = useState(app?.logoUrl);
   const [accent, setAccent] = useState(app?.accentColor ?? "");
 
   if (!app) return null;
@@ -191,6 +198,7 @@ function EditAppDialog({
     updateApp(appId, {
       name: name.trim() || app!.name,
       emoji: emoji || undefined,
+      logoUrl: logoUrl || undefined,
       accentColor: accent || undefined,
     });
     onOpenChange(false);
@@ -204,6 +212,7 @@ function EditAppDialog({
         if (v) {
           setName(app!.name);
           setEmoji(app!.emoji ?? "📦");
+          setLogoUrl(app!.logoUrl);
           setAccent(app!.accentColor ?? "");
         }
       }}
@@ -214,9 +223,13 @@ function EditAppDialog({
           <DialogDescription>Nom, emoji, et couleur d'accent propre à cette app.</DialogDescription>
         </DialogHeader>
         <form onSubmit={submit} className="grid gap-4">
+          <div className="grid gap-1.5">
+            <Label>Logo (image)</Label>
+            <LogoPicker logoUrl={logoUrl} emoji={emoji} onChange={setLogoUrl} />
+          </div>
           <div className="grid grid-cols-[80px_1fr] gap-3">
             <div className="grid gap-1.5">
-              <Label>Emoji</Label>
+              <Label>Emoji (si pas d'image)</Label>
               <Input
                 value={emoji}
                 onChange={(e) => setEmoji(e.target.value)}

@@ -13,7 +13,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-[100dvh]">
       <Sidebar mobileOpen={mobileOpen} onMobileClose={() => setMobileOpen(false)} />
       <main className="flex min-h-[100dvh] flex-1 flex-col overflow-x-hidden">
-        <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-[var(--border)] bg-[var(--background)]/85 px-4 py-3 backdrop-blur-md md:hidden">
+        <header
+          className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-[var(--border)] bg-[var(--background)]/85 px-4 pb-3 backdrop-blur-md md:hidden"
+          style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 0.75rem)" }}
+        >
           <button
             onClick={() => setMobileOpen(true)}
             className="rounded-md p-1.5 text-[var(--foreground)] hover:bg-[var(--muted)]"

@@ -7,6 +7,7 @@ create table if not exists public.apps (
   id           uuid primary key default gen_random_uuid(),
   name         text not null,
   emoji        text,
+  logo_url     text,
   accent_color text,
   created_at   timestamptz not null default now()
 );

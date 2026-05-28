@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LogoPicker } from "@/components/logo-picker";
 
 export function Sidebar({
   mobileOpen,
@@ -47,6 +48,7 @@ export function Sidebar({
           "fixed left-0 top-0 z-50 flex h-[100dvh] w-64 shrink-0 flex-col border-r border-[var(--border)] bg-[var(--subtle)] p-3 transition-transform md:relative md:translate-x-0",
           mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         )}
+        style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 0.75rem)" }}
       >
       <div className="mb-4 flex items-center justify-between gap-2 px-2 py-3">
         <Wordmark />
@@ -95,7 +97,16 @@ export function Sidebar({
                 )}
                 style={a.accentColor ? { color: active ? a.accentColor : undefined } : undefined}
               >
-                <span className="text-base leading-none">{a.emoji || "📦"}</span>
+                {a.logoUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={a.logoUrl}
+                    alt=""
+                    className="h-5 w-5 shrink-0 rounded object-cover"
+                  />
+                ) : (
+                  <span className="text-base leading-none">{a.emoji || "📦"}</span>
+                )}
                 <span className="truncate">{a.name}</span>
               </Link>
             );
@@ -164,13 +175,15 @@ function NewAppDialog() {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [emoji, setEmoji] = useState("📱");
+  const [logoUrl, setLogoUrl] = useState<string | undefined>(undefined);
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim()) return;
-    const app = addApp({ name: name.trim(), emoji });
+    const app = addApp({ name: name.trim(), emoji, logoUrl: logoUrl || undefined });
     setName("");
     setEmoji("📱");
+    setLogoUrl(undefined);
     setOpen(false);
     router.push(`/apps/${app.id}`);
   }
@@ -194,7 +207,11 @@ function NewAppDialog() {
         </DialogHeader>
         <form onSubmit={submit} className="grid gap-4">
           <div className="grid gap-1.5">
-            <Label htmlFor="app-emoji">Emoji</Label>
+            <Label>Logo (image)</Label>
+            <LogoPicker logoUrl={logoUrl} emoji={emoji} onChange={setLogoUrl} />
+          </div>
+          <div className="grid gap-1.5">
+            <Label htmlFor="app-emoji">Emoji (si pas d&apos;image)</Label>
             <Input
               id="app-emoji"
               value={emoji}

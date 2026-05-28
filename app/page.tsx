@@ -6,6 +6,7 @@ import { fmtEur, fmtNum, fmtPct } from "@/lib/utils";
 import { MetricsGrid } from "@/components/metrics-grid";
 import { AppCard } from "@/components/app-card";
 import { EmptyState } from "@/components/empty-state";
+import { LogoPicker } from "@/components/logo-picker";
 import {
   Plus,
   TrendingUp,
@@ -106,13 +107,15 @@ function NewAppButton() {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [emoji, setEmoji] = useState("📱");
+  const [logoUrl, setLogoUrl] = useState<string | undefined>(undefined);
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim()) return;
-    const app = addApp({ name: name.trim(), emoji });
+    const app = addApp({ name: name.trim(), emoji, logoUrl: logoUrl || undefined });
     setName("");
     setEmoji("📱");
+    setLogoUrl(undefined);
     setOpen(false);
     router.push(`/apps/${app.id}`);
   }
@@ -134,7 +137,11 @@ function NewAppButton() {
         </DialogHeader>
         <form onSubmit={submit} className="grid gap-4">
           <div className="grid gap-1.5">
-            <Label htmlFor="dash-emoji">Emoji</Label>
+            <Label>Logo (image)</Label>
+            <LogoPicker logoUrl={logoUrl} emoji={emoji} onChange={setLogoUrl} />
+          </div>
+          <div className="grid gap-1.5">
+            <Label htmlFor="dash-emoji">Emoji (si pas d&apos;image)</Label>
             <Input
               id="dash-emoji"
               value={emoji}

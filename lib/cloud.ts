@@ -9,6 +9,7 @@ type AppRow = {
   id: string;
   name: string;
   emoji: string | null;
+  logo_url: string | null;
   accent_color: string | null;
   created_at: string;
 };
@@ -46,6 +47,7 @@ function rowToApp(r: AppRow): App {
     id: r.id,
     name: r.name,
     emoji: r.emoji ?? undefined,
+    logoUrl: r.logo_url ?? undefined,
     accentColor: r.accent_color ?? undefined,
     createdAt: r.created_at,
   };
@@ -56,6 +58,7 @@ function appToRow(a: App): AppRow {
     id: a.id,
     name: a.name,
     emoji: a.emoji ?? null,
+    logo_url: a.logoUrl ?? null,
     accent_color: a.accentColor ?? null,
     created_at: a.createdAt,
   };

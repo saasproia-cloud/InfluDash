@@ -24,6 +24,7 @@ export type App = {
   id: string;
   name: string;
   emoji?: string;
+  logoUrl?: string;
   accentColor?: string;
   createdAt: string;
 };
