@@ -82,7 +82,7 @@ régénèrent avec `node scripts/gen-icons.mjs`.
 
 | Métrique | Formule |
 |---|---|
-| Coût influ | forfait fixe **ou** `RPM donné × vues / 1000` |
+| Coût influ | forfait fixe (`prix/vidéo × nb vidéos`) **ou** `RPM donné × vues / 1000` |
 | Revenu / user | `revenu / users` |
 | RPM réel | `revenu / vues × 1000` |
 | Panier moyen | `revenu / nb clients` |

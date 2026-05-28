@@ -32,7 +32,8 @@ type Draft = {
   platform: Platform;
   paymentType: PaymentType;
   rpmGiven: string;
-  fixedCost: string;
+  costPerVideo: string;
+  nbVideos: string;
   revenu: string;
   users: string;
   vues: string;
@@ -47,7 +48,8 @@ function toDraft(i?: Partial<Influencer>): Draft {
     platform: i?.platform ?? "tiktok",
     paymentType: i?.paymentType ?? "rpm",
     rpmGiven: i?.rpmGiven?.toString() ?? "",
-    fixedCost: i?.fixedCost?.toString() ?? "",
+    costPerVideo: i?.costPerVideo?.toString() ?? "",
+    nbVideos: i?.nbVideos?.toString() ?? "",
     revenu: i?.revenu?.toString() ?? "",
     users: i?.users?.toString() ?? "",
     vues: i?.vues?.toString() ?? "",
@@ -69,7 +71,8 @@ function fromDraft(d: Draft): Omit<Influencer, "id" | "createdAt" | "appId"> {
     platform: d.platform,
     paymentType: d.paymentType,
     rpmGiven: d.paymentType === "rpm" ? n(d.rpmGiven) : undefined,
-    fixedCost: d.paymentType === "fixed" ? n(d.fixedCost) : undefined,
+    costPerVideo: d.paymentType === "fixed" ? n(d.costPerVideo) : undefined,
+    nbVideos: d.paymentType === "fixed" ? n(d.nbVideos) : undefined,
     revenu: n(d.revenu),
     users: n(d.users),
     vues: n(d.vues),
@@ -116,7 +119,8 @@ export function InfluencerForm({
     name: "",
     paymentType: d.paymentType,
     rpmGiven: n(d.rpmGiven),
-    fixedCost: n(d.fixedCost),
+    costPerVideo: n(d.costPerVideo),
+    nbVideos: n(d.nbVideos),
     vues: n(d.vues),
     createdAt: "",
   });
@@ -204,15 +208,29 @@ export function InfluencerForm({
                 </Field>
               </div>
             ) : (
-              <div className="mt-3">
-                <Field label="Forfait fixe (€)">
+              <div className="mt-3 grid grid-cols-3 gap-3">
+                <Field label="€ / vidéo">
                   <Input
                     type="number"
                     step="0.01"
-                    value={d.fixedCost}
-                    onChange={(e) => set("fixedCost", e.target.value)}
-                    placeholder="ex: 1118"
+                    value={d.costPerVideo}
+                    onChange={(e) => set("costPerVideo", e.target.value)}
+                    placeholder="ex: 50"
                   />
+                </Field>
+                <Field label="Nb vidéos">
+                  <Input
+                    type="number"
+                    step="1"
+                    value={d.nbVideos}
+                    onChange={(e) => set("nbVideos", e.target.value)}
+                    placeholder="ex: 3"
+                  />
+                </Field>
+                <Field label="Coût total">
+                  <div className="flex h-9 items-center rounded-md border border-[var(--border)] bg-[var(--subtle)] px-3 text-sm tabular-nums">
+                    {fmtEur(previewCost)}
+                  </div>
                 </Field>
               </div>
             )}

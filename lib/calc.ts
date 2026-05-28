@@ -18,7 +18,12 @@ const sub = (a?: number, b?: number) => {
 };
 
 export function coutInflu(i: Influencer): number | null {
-  if (i.paymentType === "fixed") return safe(i.fixedCost) ?? null;
+  if (i.paymentType === "fixed") {
+    const perVideo = safe(i.costPerVideo);
+    const nbVideos = safe(i.nbVideos);
+    if (perVideo === undefined || nbVideos === undefined) return null;
+    return perVideo * nbVideos;
+  }
   const rpm = safe(i.rpmGiven);
   const vues = safe(i.vues);
   if (rpm === undefined || vues === undefined) return null;

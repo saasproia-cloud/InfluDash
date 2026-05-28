@@ -10,7 +10,8 @@ export type Influencer = {
   platform?: Platform;
   paymentType: PaymentType;
   rpmGiven?: number;
-  fixedCost?: number;
+  costPerVideo?: number;
+  nbVideos?: number;
   revenu?: number;
   users?: number;
   vues?: number;

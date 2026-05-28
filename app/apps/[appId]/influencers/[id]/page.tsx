@@ -96,7 +96,10 @@ export default function InfluencerDetailPage({
               </Badge>
             ) : (
               <Badge variant="outline">
-                Forfait fixe {inf.fixedCost !== undefined ? `· ${fmtEur(inf.fixedCost)}` : ""}
+                Forfait fixe
+                {inf.costPerVideo !== undefined && inf.nbVideos !== undefined
+                  ? ` · ${fmtNum(inf.nbVideos)} × ${fmtEur(inf.costPerVideo)}`
+                  : ""}
               </Badge>
             )}
             {inf.platform && (
