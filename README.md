@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# InfluDash
 
-## Getting Started
+Outil interne de pilotage d'influenceurs : suivi par application, calculs automatiques
+(RPM réel, coût d'acquisition, coût/client, panier moyen, marge, ROI), mode de paiement
+fixe ou au RPM, thèmes de couleur, PWA installable, et **synchronisation temps réel
+multi-appareils** via un compte partagé.
 
-First, run the development server:
+---
+
+## 1. Lancer en local
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# → http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Sans configuration, l'app tourne en **mode local** : les données restent dans le
+navigateur (localStorage). Parfait pour tester. Pour synchroniser téléphone ↔ PC,
+passe à l'étape 2.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 2. Activer la sync multi-appareils (Supabase — gratuit, ~5 min)
 
-## Learn More
+Tu veux un seul compte accessible depuis tous tes appareils, en temps réel. On utilise
+Supabase (Postgres + realtime + auth, offre gratuite suffisante).
 
-To learn more about Next.js, take a look at the following resources:
+1. **Crée un projet** sur [supabase.com](https://supabase.com) (New project, choisis un
+   mot de passe de base de données, attends ~2 min).
+2. **Crée les tables** : Supabase → `SQL Editor` → `New query` → colle tout le contenu
+   de [`supabase/schema.sql`](supabase/schema.sql) → `Run`.
+3. **Crée ton compte unique** : Supabase → `Authentication` → `Users` → `Add user` →
+   `Create new user` (mets ton email + un mot de passe). C'est ce compte que tu
+   utiliseras partout.
+   - Optionnel mais recommandé : `Authentication` → `Sign In / Providers` → désactive
+     les inscriptions publiques pour que personne d'autre ne puisse créer de compte.
+4. **Récupère tes clés** : Supabase → `Project Settings` → `API` → copie `Project URL`
+   et la clé `anon public`.
+5. **Configure l'app** : copie `.env.local.example` en `.env.local` et remplis :
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGci...
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+6. Relance `npm run dev`. Un écran de connexion apparaît → connecte-toi avec le compte
+   créé à l'étape 3. Toutes les modifs sont désormais synchronisées en direct entre tous
+   les appareils connectés à ce compte.
 
-## Deploy on Vercel
+> Sécurité : les données ne sont accessibles qu'aux utilisateurs **authentifiés** (RLS
+> activée dans le schéma). Garde donc les inscriptions publiques désactivées.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 3. Déployer (Vercel)
+
+```bash
+npx vercel
+```
+
+Pendant le déploiement, ajoute les deux variables d'environnement
+(`NEXT_PUBLIC_SUPABASE_URL` et `NEXT_PUBLIC_SUPABASE_ANON_KEY`) dans
+`Vercel → Project → Settings → Environment Variables`, puis redeploie.
+
+---
+
+## 4. Installer comme application (PWA)
+
+- **iPhone (Safari)** : ouvre l'URL → bouton Partager → « Sur l'écran d'accueil ».
+  L'app s'ouvre en plein écran, sans barre Safari, comme une vraie app.
+- **Android (Chrome)** : menu ⋮ → « Installer l'application ».
+- **PC (Chrome/Edge)** : icône d'installation dans la barre d'adresse.
+
+L'icône, le nom (InfluDash) et le mode plein écran sont définis dans
+[`public/manifest.webmanifest`](public/manifest.webmanifest). Les icônes se
+régénèrent avec `node scripts/gen-icons.mjs`.
+
+---
+
+## Calculs
+
+| Métrique | Formule |
+|---|---|
+| Coût influ | forfait fixe **ou** `RPM donné × vues / 1000` |
+| Revenu / user | `revenu / users` |
+| RPM réel | `revenu / vues × 1000` |
+| Panier moyen | `revenu / nb clients` |
+| Users / 1000 vues | `users / vues × 1000` |
+| Coût / user | `coût influ / users` |
+| Coût / client | `coût influ / nb clients` |
+| Marge | `revenu − coût influ` |
+| ROI | `(revenu − coût influ) / coût influ × 100` |
+
+Tous les champs sont optionnels ; une métrique dont une donnée manque s'affiche `—`.
+
+---
+
+## Sauvegarde
+
+`Réglages → Sauvegarde` : export/import JSON (utile comme backup même en mode cloud).
